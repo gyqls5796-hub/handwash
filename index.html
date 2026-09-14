@@ -5,37 +5,146 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>High Score Wash</title>
   <style>
-    /* CSS는 이전과 완전히 동일합니다. 공간 절약을 위해 생략 없이 그대로 유지하세요 */
-    body { margin: 0; padding: 0; background-color: #f0f9ff; font-family: 'Arial Rounded MT Bold', -apple-system, sans-serif; display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden; touch-action: manipulation; user-select: none; }
-    .header { width: 100%; padding: 20px 0; display: flex; justify-content: space-around; background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.05); z-index: 10; }
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f0f9ff;
+      font-family: 'Arial Rounded MT Bold', -apple-system, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      touch-action: manipulation;
+      user-select: none;
+    }
+
+    .header {
+      width: 100%;
+      padding: 20px 0;
+      display: flex;
+      justify-content: space-around;
+      background: white;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      z-index: 10;
+    }
+    
     .status-box { text-align: center; }
     .status-label { font-size: 0.9rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
     .status-value { font-size: 2rem; font-weight: 900; color: #0ea5e9; }
-    #game-area { flex: 1; display: flex; justify-content: center; align-items: center; width: 100%; position: relative; }
-    .hand-container { position: relative; width: 320px; height: 400px; display: flex; justify-content: center; align-items: center; font-size: 18rem; line-height: 1; }
-    .bubble { position: absolute; width: 50px; height: 50px; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.95), rgba(186, 230, 253, 0.8)); border: 1px solid rgba(255,255,255,0.8); border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15); cursor: pointer; animation: float 2s infinite ease-in-out alternate; -webkit-tap-highlight-color: transparent; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; }
+
+    #game-area {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      position: relative;
+    }
+
+    .hand-container {
+      position: relative;
+      width: 320px;
+      height: 400px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 18rem;
+      line-height: 1;
+    }
+
+    .bubble {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.95), rgba(186, 230, 253, 0.8));
+      border: 1px solid rgba(255,255,255,0.8);
+      border-radius: 50%;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      cursor: pointer;
+      animation: float 2s infinite ease-in-out alternate;
+      -webkit-tap-highlight-color: transparent;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.5rem;
+    }
+
     .bubble:nth-child(odd) { animation-delay: -1s; }
     .bubble:nth-child(3n) { animation-delay: -0.5s; }
-    @keyframes float { 0% { transform: translateY(0) scale(1); } 100% { transform: translateY(-8px) scale(1.05); } }
-    .floating-score { position: absolute; font-size: 2rem; font-weight: bold; color: #f59e0b; text-shadow: 0 2px 4px rgba(0,0,0,0.2); pointer-events: none; animation: scoreUp 0.8s forwards; z-index: 20; }
-    @keyframes scoreUp { 0% { transform: translateY(0) scale(1); opacity: 1; } 100% { transform: translateY(-40px) scale(1.5); opacity: 0; } }
-    #result-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 50; backdrop-filter: blur(5px); }
+
+    @keyframes float {
+      0% { transform: translateY(0) scale(1); }
+      100% { transform: translateY(-8px) scale(1.05); }
+    }
+
+    .floating-score {
+      position: absolute;
+      font-size: 2rem;
+      font-weight: bold;
+      color: #f59e0b;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      pointer-events: none;
+      animation: scoreUp 0.8s forwards;
+      z-index: 20;
+    }
+
+    @keyframes scoreUp {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(-40px) scale(1.5); opacity: 0; }
+    }
+
+    #result-screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255,255,255,0.95);
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 50;
+      backdrop-filter: blur(5px);
+    }
+
     .result-title { font-size: 2rem; color: #0f172a; margin-bottom: 10px; }
     .final-score { font-size: 5rem; font-weight: 900; color: #0ea5e9; margin: 10px 0; }
     .feedback { font-size: 1.2rem; color: #64748b; text-align: center; padding: 0 20px; line-height: 1.5;}
     .stars { font-size: 2.5rem; margin-bottom: 20px; letter-spacing: 5px; }
-    .reset-btn { margin-top: 30px; padding: 15px 40px; font-size: 1.2rem; font-weight: bold; background-color: #0ea5e9; color: white; border: none; border-radius: 30px; box-shadow: 0 4px 15px rgba(14, 165, 233, 0.4); cursor: pointer; }
+
+    .reset-btn {
+      margin-top: 30px;
+      padding: 15px 40px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      background-color: #0ea5e9;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      box-shadow: 0 4px 15px rgba(14, 165, 233, 0.4);
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
 
   <div class="header">
-    <div class="status-box"><div class="status-label">POPS LEFT</div><div class="status-value" id="pops-left">3</div></div>
-    <div class="status-box"><div class="status-label">SCORE</div><div class="status-value" id="current-score">0</div></div>
+    <div class="status-box">
+      <div class="status-label">POPS LEFT</div>
+      <div class="status-value" id="pops-left">3</div>
+    </div>
+    <div class="status-box">
+      <div class="status-label">SCORE</div>
+      <div class="status-value" id="current-score">0</div>
+    </div>
   </div>
 
   <div id="game-area">
-    <div class="hand-container" id="hand">🖐🏼</div>
+    <div class="hand-container" id="hand">
+      🖐🏼
+    </div>
   </div>
 
   <div id="result-screen">
@@ -43,12 +152,13 @@
     <div class="final-score" id="final-score-display">0</div>
     <div class="stars" id="star-display">⭐⭐⭐</div>
     <div class="feedback" id="feedback-msg">Awesome!</div>
+    
     <button class="reset-btn" onclick="initGame()">Try Again 🔄</button>
   </div>
 
   <script>
-    // ★ 여기에 방금 복사하신 구글 앱스 스크립트 웹앱 URL을 붙여넣으세요!
-    const GOOGLE_SHEET_URL = "YOUR_GOOGLE_SCRIPT_URL_HERE";
+    // 알려주신 URL을 완벽하게 적용했습니다.
+    const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbwg6YI0G06IpcCW8HHWOdd-gH40BMdgiP8O48xRAVNE8uirN3vq6rn-ty9lm66uJH01/exec";
 
     const bubbleData = [
       { top: '10%', left: '48%', score: 5, id: '손톱밑(중지)' }, 
@@ -66,7 +176,7 @@
     let score = 0;
     let popsRemaining = 3;
     let isGameOver = false;
-    let clickedHistory = []; // 어떤 부위를 터치했는지 기록할 배열
+    let clickedHistory = [];
 
     const handContainer = document.getElementById('hand');
     const scoreUI = document.getElementById('current-score');
@@ -77,7 +187,7 @@
       score = 0;
       popsRemaining = 3;
       isGameOver = false;
-      clickedHistory = []; // 배열 초기화
+      clickedHistory = [];
       
       scoreUI.innerText = score;
       popsUI.innerText = popsRemaining;
@@ -108,7 +218,6 @@
       scoreUI.innerText = score;
       popsUI.innerText = popsRemaining;
       
-      // 터치한 부위 기록 저장
       clickedHistory.push(regionId);
 
       bubbleEl.remove();
@@ -117,7 +226,7 @@
       if (popsRemaining === 0) {
         isGameOver = true;
         
-        // 게임이 끝나면 백그라운드에서 구글 시트로 데이터 전송 (사용자는 대기 없음)
+        // 3번 다 누르면 백그라운드에서 구글 시트로 데이터 전송
         sendDataToGoogleSheet(score, clickedHistory);
 
         setTimeout(showResult, 800); 
@@ -163,20 +272,13 @@
       resultScreen.style.display = 'flex';
     }
 
-    // 구글 시트로 데이터를 쏘는 핵심 함수
-    // 구글 시트로 데이터를 쏘는 핵심 함수 (오류 수정 버전)
+    // CORS(보안 에러)를 우회하기 위해 text/plain을 사용하는 전송 함수
     function sendDataToGoogleSheet(finalScore, historyArray) {
-      if (GOOGLE_SHEET_URL === "YOUR_GOOGLE_SCRIPT_URL_HERE") {
-        console.log("구글 시트 URL이 설정되지 않았습니다.");
-        return;
-      }
-
       const dataPayload = {
         score: finalScore,
         clickedAreas: historyArray
       };
 
-      // 브라우저 보안 에러를 피하기 위해 'text/plain'으로 속여서 보냅니다.
       fetch(GOOGLE_SHEET_URL, {
         method: 'POST',
         mode: 'no-cors',
@@ -186,7 +288,12 @@
         body: JSON.stringify(dataPayload)
       })
       .then(() => {
-        console.log("구글 시트로 전송 신호 보냄!");
+        console.log("구글 시트로 전송 요청 완료 (no-cors)");
       })
       .catch(error => console.error("전송 실패:", error));
     }
+
+    initGame();
+  </script>
+</body>
+</html>

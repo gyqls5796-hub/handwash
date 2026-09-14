@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>High Score Wash</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f0f9ff;
+      font-family: 'Arial Rounded MT Bold', -apple-system, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      touch-action: manipulation;
+      user-select: none;
+    }
+
+    /* 상단 UI (점수 및 남은 횟수) */
+    .header {
+      width: 100%;
+      padding: 20px 0;
+      display: flex;
+      justify-content: space-around;
+      background: white;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      z-index: 10;
+    }
+    
+    .status-box {
+      text-align: center;
+    }
+
+    .status-label {
+      font-size: 0.9rem;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .status-value {
+      font-size: 2rem;
+      font-weight: 900;
+      color: #0ea5e9;
+    }
+
+    /* 게임 화면 */
+    #game-area {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      position: relative;
+    }
+
+    /* 손바닥 컨테이너 */
+    .hand-container {
+      position: relative;
+      width: 320px;
+      height: 400px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 18rem; /* 거대한 손 이모지 */
+      line-height: 1;
+    }
+
+    /* 비누 방울 */
+    .bubble {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.95), rgba(186, 230, 253, 0.8));
+      border: 1px solid rgba(255,255,255,0.8);
+      border-radius: 50%;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      cursor: pointer;
+      animation: float 2s infinite ease-in-out alternate;
+      -webkit-tap-highlight-color: transparent;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.5rem;
+    }
+
+    /* 방울 애니메이션 딜레이 섞기 */
+    .bubble:nth-child(odd) { animation-delay: -1s; }
+    .bubble:nth-child(3n) { animation-delay: -0.5s; }
+
+    @keyframes float {
+      0% { transform: translateY(0) scale(1); }
+      100% { transform: translateY(-8px) scale(1.05); }
+    }
+
+    /* 터졌을 때 점수 텍스트 애니메이션 */
+    .floating-score {
+      position: absolute;
+      font-size: 2rem;
+      font-weight: bold;
+      color: #f59e0b;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      pointer-events: none;
+      animation: scoreUp 0.8s forwards;
+      z-index: 20;
+    }
+
+    @keyframes scoreUp {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(-40px) scale(1.5); opacity: 0; }
+    }
+
+    /* 결과 화면 */
+    #result-screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255,255,255,0.95);
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 50;
+      backdrop-filter: blur(5px);
+    }
+
+    .result-title { font-size: 2rem; color: #0f172a; margin-bottom: 10px; }
+    .final-score { font-size: 5rem; font-weight: 900; color: #0ea5e9; margin: 10px 0; }
+    .feedback { font-size: 1.2rem; color: #64748b; text-align: center; padding: 0 20px; line-height: 1.5;}
+    
+    .stars { font-size: 2.5rem; margin-bottom: 20px; letter-spacing: 5px; }
+
+    .reset-btn {
+      margin-top: 30px;
+      padding: 15px 40px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      background-color: #0ea5e9;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      box-shadow: 0 4px 15px rgba(14, 165, 233, 0.4);
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 상단 상태바 -->
+  <div class="header">
+    <div class="status-box">
+      <div class="status-label">POPS LEFT</div>
+      <div class="status-value" id="pops-left">3</div>
+    </div>
+    <div class="status-box">
+      <div class="status-label">SCORE</div>
+      <div class="status-value" id="current-score">0</div>
+    </div>
+  </div>
+
+  <!-- 게임 영역 -->
+  <div id="game-area">
+    <div class="hand-container" id="hand">
+      🖐🏼
+      <!-- 자바스크립트로 버블들이 이 안에 생성됩니다 -->
+    </div>
+  </div>
+
+  <!-- 결과 화면 -->
+  <div id="result-screen">
+    <div class="result-title">Your Score</div>
+    <div class="final-score" id="final-score-display">0</div>
+    <div class="stars" id="star-display">⭐⭐⭐</div>
+    <div class="feedback" id="feedback-msg">Awesome!</div>
+    
+    <button class="reset-btn" onclick="initGame()">Try Again 🔄</button>
+  </div>
+
+  <script>
+    // 버블 데이터 (위치와 점수 차등)
+    const bubbleData = [
+      { top: '10%', left: '48%', score: 5, id: 'fingernail-middle' }, // 손톱 밑 1
+      { top: '18%', left: '28%', score: 5, id: 'fingernail-index' },  // 손톱 밑 2
+      { top: '18%', left: '68%', score: 5, id: 'fingernail-ring' },   // 손톱 밑 3
+      { top: '35%', left: '40%', score: 4, id: 'between-1' },         // 손가락 사이 1
+      { top: '35%', left: '55%', score: 4, id: 'between-2' },         // 손가락 사이 2
+      { top: '48%', left: '15%', score: 3, id: 'thumb' },             // 엄지
+      { top: '85%', left: '48%', score: 2, id: 'wrist' },             // 손목
+      { top: '55%', left: '48%', score: 1, id: 'palm-center' },       // 손바닥 1
+      { top: '65%', left: '35%', score: 1, id: 'palm-left' },         // 손바닥 2
+      { top: '65%', left: '65%', score: 1, id: 'palm-right' }         // 손바닥 3
+    ];
+
+    let score = 0;
+    let popsRemaining = 3;
+    let isGameOver = false;
+
+    const handContainer = document.getElementById('hand');
+    const scoreUI = document.getElementById('current-score');
+    const popsUI = document.getElementById('pops-left');
+    const resultScreen = document.getElementById('result-screen');
+
+    // 게임 초기화
+    function initGame() {
+      score = 0;
+      popsRemaining = 3;
+      isGameOver = false;
+      
+      scoreUI.innerText = score;
+      popsUI.innerText = popsRemaining;
+      resultScreen.style.display = 'none';
+      
+      // 기존 버블 및 이펙트 삭제
+      const existingBubbles = document.querySelectorAll('.bubble, .floating-score');
+      existingBubbles.forEach(el => el.remove());
+
+      // 버블 다시 그리기
+      bubbleData.forEach(data => {
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        bubble.style.top = data.top;
+        bubble.style.left = data.left;
+        bubble.innerText = '🫧'; // 비누방울 이모지
+        
+        // 터치/클릭 이벤트
+        bubble.onclick = (e) => handlePop(e, bubble, data.score);
+        handContainer.appendChild(bubble);
+      });
+    }
+
+    // 버블 터뜨리기 로직
+    function handlePop(event, bubbleEl, points) {
+      if (isGameOver || popsRemaining <= 0) return;
+
+      // 1. 진동 피드백
+      if (navigator.vibrate) navigator.vibrate(40);
+
+      // 2. 상태 업데이트
+      score += points;
+      popsRemaining--;
+      scoreUI.innerText = score;
+      popsUI.innerText = popsRemaining;
+
+      // 3. 터지는 위치 좌표 구하기
+      const x = event.clientX || bubbleEl.getBoundingClientRect().left + 25;
+      const y = event.clientY || bubbleEl.getBoundingClientRect().top + 25;
+
+      // 4. 버블 삭제
+      bubbleEl.remove();
+
+      // 5. 떠오르는 점수 이펙트 생성 (+5)
+      showFloatingScore(points, bubbleEl.style.left, bubbleEl.style.top);
+
+      // 6. 게임 종료 체크
+      if (popsRemaining === 0) {
+        isGameOver = true;
+        setTimeout(showResult, 800); // 점수 올라가는 애니메이션 볼 시간 확보
+      }
+    }
+
+    // 터진 위치에서 점수 올라가는 효과
+    function showFloatingScore(points, left, top) {
+      const floatEl = document.createElement('div');
+      floatEl.className = 'floating-score';
+      floatEl.style.left = left;
+      floatEl.style.top = top;
+      
+      // 점수에 따라 색상 다르게 (5점은 빨강/황금, 1점은 회색빛)
+      if(points === 5) floatEl.style.color = '#ef4444'; 
+      else if(points >= 3) floatEl.style.color = '#f59e0b';
+      else floatEl.style.color = '#94a3b8';
+
+      floatEl.innerText = `+${points}`;
+      handContainer.appendChild(floatEl);
+    }
+
+    // 결과 화면 띄우기 (점수에 따른 차등 피드백)
+    function showResult() {
+      document.getElementById('final-score-display').innerText = score;
+      
+      let stars = "";
+      let msg = "";
+
+      if (score >= 13) {
+        stars = "⭐⭐⭐";
+        msg = "Perfect! 🎁<br>You found all the hidden blind spots<br>(Fingertips & Between fingers)!";
+      } else if (score >= 8) {
+        stars = "⭐⭐";
+        msg = "Good job! 👍<br>But don't forget to wash<br>under your fingernails next time!";
+      } else {
+        stars = "⭐";
+        msg = "Oops! 😅<br>Washing only the palm isn't enough.<br>Find the higher score spots!";
+      }
+
+      document.getElementById('star-display').innerText = stars;
+      document.getElementById('feedback-msg').innerHTML = msg;
+      
+      // 결과 화면 시 긴 진동
+      if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+      
+      resultScreen.style.display = 'flex';
+    }
+
+    // 첫 실행
+    initGame();
+  </script>
+</body>
+</html>

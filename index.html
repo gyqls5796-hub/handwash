@@ -56,6 +56,7 @@
       pointer-events: none; 
     }
     
+    /* ☁️ 구름 거품 설정 */
     .bubble { 
       position: absolute; 
       width: 54px; height: 30px; 
@@ -64,6 +65,9 @@
       cursor: pointer; 
       animation: floatCloud 2.5s infinite ease-in-out alternate; 
       -webkit-tap-highlight-color: transparent; z-index: 10;
+      
+      /* 세균을 가운데 정렬하기 위한 설정 */
+      display: flex; justify-content: center; align-items: center;
     }
 
     .bubble::before {
@@ -78,7 +82,22 @@
       background: #ffffff; border-radius: 50%;
     }
 
+    /* 🦠 거부감 없는 귀여운 세균 애니메이션 */
+    .germ {
+      position: relative;
+      z-index: 2; /* 거품(가상요소) 위로 올라오게 설정 */
+      font-size: 1.3rem;
+      filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
+      animation: wiggle 1.5s infinite ease-in-out;
+    }
+
+    @keyframes wiggle {
+      0%, 100% { transform: rotate(-15deg) scale(1); }
+      50% { transform: rotate(15deg) scale(1.1); }
+    }
+
     .bubble:nth-child(odd) { animation-delay: -1s; }
+    .bubble:nth-child(odd) .germ { animation-delay: -0.5s; }
     .bubble:nth-child(3n) { animation-delay: -0.5s; }
 
     @keyframes floatCloud { 
@@ -136,18 +155,17 @@
   <script>
     const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbwg6YI0G06IpcCW8HHWOdd-gH40BMdgiP8O48xRAVNE8uirN3vq6rn-ty9lm66uJH01/exec";
 
-    // 🎯 빨간 동그라미 이미지에 맞춰 정밀하게 재조정된 좌표값입니다.
     const bubbleData = [
-      { top: '3%', left: '38%', score: 5, id: '중지끝' },          // ① 가장 위쪽 (중지 끝)
-      { top: '20%', left: '41%', score: 4, id: '중지마디' },        // ② 두 번째 (중지 마디)
-      { top: '32%', left: '79%', score: 5, id: '엄지끝' },          // ③ 오른쪽 끝 (엄지)
-      { top: '38%', left: '17%', score: 4, id: '새끼손가락아래' },   // ④ 왼쪽 위 (새끼 밑)
-      { top: '39%', left: '53%', score: 5, id: '검지아래' },        // ⑤ 중앙 우측상단 (검지 밑)
-      { top: '48%', left: '30%', score: 1, id: '손바닥(중앙좌)' },   // ⑥ 중앙 좌측
-      { top: '55%', left: '58%', score: 1, id: '손바닥(중앙우)' },   // ⑦ 중앙 우측하단
-      { top: '61%', left: '17%', score: 1, id: '손바닥(좌측하단)' }, // ⑧ 왼쪽 아래
-      { top: '70%', left: '38%', score: 3, id: '손바닥밑동' },      // ⑨ 아래쪽 중앙 (손바닥 밑)
-      { top: '84%', left: '50%', score: 2, id: '손목' }             // ⑩ 가장 아래쪽 (손목)
+      { top: '3%', left: '38%', score: 5, id: '중지끝' },          
+      { top: '20%', left: '41%', score: 4, id: '중지마디' },        
+      { top: '32%', left: '79%', score: 5, id: '엄지끝' },          
+      { top: '38%', left: '17%', score: 4, id: '새끼손가락아래' },   
+      { top: '39%', left: '53%', score: 5, id: '검지아래' },        
+      { top: '48%', left: '30%', score: 1, id: '손바닥(중앙좌)' },   
+      { top: '55%', left: '58%', score: 1, id: '손바닥(중앙우)' },   
+      { top: '61%', left: '17%', score: 1, id: '손바닥(좌측하단)' }, 
+      { top: '70%', left: '38%', score: 3, id: '손바닥밑동' },      
+      { top: '84%', left: '50%', score: 2, id: '손목' }             
     ];
 
     let score = 0;
@@ -199,7 +217,9 @@
         bubble.className = 'bubble';
         bubble.style.top = data.top;
         bubble.style.left = data.left;
-        bubble.innerText = ''; 
+        
+        // 🦠 거품 안에 귀여운 세균 추가!
+        bubble.innerHTML = '<div class="germ">🦠</div>'; 
         
         bubble.onclick = (e) => handlePop(e, bubble, data.score, data.id);
         handContainer.appendChild(bubble);

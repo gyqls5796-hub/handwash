@@ -12,7 +12,7 @@
       height: 100vh; overflow: hidden; touch-action: manipulation; user-select: none;
     }
 
-    /* 상단 UI (남은 횟수, 점수) */
+    /* 상단 UI */
     .header {
       width: 100%; padding: 20px 0; display: none; 
       justify-content: space-around; background: white;
@@ -65,56 +65,56 @@
       pointer-events: none; 
     }
     
-    /* ☁️ 완전히 새로워진 비누 거품(Foam) 스타일 */
+    /* ☁️ 완벽한 구름(Cloud) 형태의 비누 거품 디자인 */
     .bubble { 
       position: absolute; 
-      width: 45px; height: 45px; 
-      /* 하얗고 뽀얀 거품 그라데이션 */
-      background: radial-gradient(circle at 25% 25%, #ffffff 30%, #e0f2fe 90%);
-      /* 정원이 아닌 자연스러운 물결 모양(Blob) */
-      border-radius: 45% 55% 40% 60% / 55% 45% 60% 40%;
-      /* 3D 입체감을 주는 그림자 */
-      box-shadow: 
-        inset 4px 4px 6px rgba(255,255,255,0.9),
-        inset -2px -2px 5px rgba(186, 230, 253, 0.5),
-        0 6px 12px rgba(0,0,0,0.1);
+      /* 구름의 몸통(밑받침) */
+      width: 54px; 
+      height: 30px; 
+      background: #ffffff;
+      border-radius: 30px;
+      /* 구름 전체 그림자 + 거품 특유의 연한 푸른빛 밑단 */
+      box-shadow: 0 5px 8px rgba(0,0,0,0.12), inset 0 -4px 6px rgba(186, 230, 253, 0.6);
       cursor: pointer; 
-      /* 둥둥 떠다니며 모양이 스르륵 변하는 이중 애니메이션 */
-      animation: float 2s infinite ease-in-out alternate, morph 3s infinite ease-in-out; 
+      animation: floatCloud 2.5s infinite ease-in-out alternate; 
       -webkit-tap-highlight-color: transparent; 
       z-index: 10;
     }
 
-    /* 거품 덩어리 디테일: 옆에 붙어있는 작은 거품 1 */
+    /* 구름의 왼쪽 윗부분 (작은 둥근 덩어리) */
     .bubble::before {
-      content: ''; position: absolute;
-      width: 25px; height: 25px; top: -5px; left: -8px;
-      background: radial-gradient(circle at 20% 20%, #ffffff 30%, #e0f2fe 90%);
-      border-radius: 50% 60% 40% 50%;
-      box-shadow: inset 2px 2px 4px rgba(255,255,255,0.9), inset -1px -1px 3px rgba(186, 230, 253, 0.4);
+      content: ''; 
+      position: absolute;
+      top: -12px; 
+      left: 8px;
+      width: 24px; 
+      height: 24px;
+      background: #ffffff;
+      border-radius: 50%;
     }
 
-    /* 거품 덩어리 디테일: 옆에 붙어있는 작은 거품 2 */
+    /* 구름의 오른쪽 윗부분 (큰 둥근 덩어리) */
     .bubble::after {
-      content: ''; position: absolute;
-      width: 28px; height: 28px; bottom: -4px; right: -6px;
-      background: radial-gradient(circle at 30% 20%, #ffffff 30%, #e0f2fe 90%);
-      border-radius: 40% 50% 60% 50%;
-      box-shadow: inset 2px 2px 4px rgba(255,255,255,0.9), inset -1px -1px 3px rgba(186, 230, 253, 0.4);
+      content: ''; 
+      position: absolute;
+      top: -18px; 
+      right: 6px;
+      width: 32px; 
+      height: 32px;
+      background: #ffffff;
+      border-radius: 50%;
     }
 
-    .bubble:nth-child(odd) { animation-delay: -1s, 0s; }
-    .bubble:nth-child(3n) { animation-delay: -0.5s, -1s; }
+    /* 둥둥 떠다니는 애니메이션 속도 다르게 섞기 */
+    .bubble:nth-child(odd) { animation-delay: -1s; }
+    .bubble:nth-child(3n) { animation-delay: -0.5s; }
 
-    /* 거품 모양이 꿈틀거리는 애니메이션 */
-    @keyframes morph {
-      0% { border-radius: 45% 55% 40% 60% / 55% 45% 60% 40%; }
-      50% { border-radius: 55% 45% 60% 40% / 45% 55% 40% 60%; }
-      100% { border-radius: 45% 55% 40% 60% / 55% 45% 60% 40%; }
+    @keyframes floatCloud { 
+      0% { transform: translateY(0) scale(1); } 
+      100% { transform: translateY(-6px) scale(1.05); } 
     }
-
-    @keyframes float { 0% { transform: translateY(0) scale(1); } 100% { transform: translateY(-8px) scale(1.05); } }
     
+    /* 터졌을 때 점수 텍스트 */
     .floating-score { position: absolute; font-size: 2rem; font-weight: bold; color: #f59e0b; text-shadow: 0 2px 4px rgba(0,0,0,0.2); pointer-events: none; animation: scoreUp 0.8s forwards; z-index: 20; }
     @keyframes scoreUp { 0% { transform: translateY(0) scale(1); opacity: 1; } 100% { transform: translateY(-40px) scale(1.5); opacity: 0; } }
 
@@ -151,6 +151,7 @@
     <div class="question-text">Where should we pay more attention to wash?</div>
     
     <div class="hand-container" id="hand">
+      <!-- 깃허브에 올리신 내 사진 파일 -->
       <img src="hand.png" alt="Hand Image" class="hand-image">
     </div>
   </div>
@@ -166,6 +167,7 @@
   <script>
     const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbwg6YI0G06IpcCW8HHWOdd-gH40BMdgiP8O48xRAVNE8uirN3vq6rn-ty9lm66uJH01/exec";
 
+    // 구름 모양으로 변경되면서 좌표 기준점이 살짝 달라졌습니다. (미세조정이 필요할 수 있습니다)
     const bubbleData = [
       { top: '3%', left: '46%', score: 5, id: '손톱밑(중지)' }, 
       { top: '12%', left: '26%', score: 5, id: '손톱밑(검지)' },  
@@ -228,8 +230,6 @@
         bubble.className = 'bubble';
         bubble.style.top = data.top;
         bubble.style.left = data.left;
-        
-        // 이모지 대신 CSS로 거품 덩어리를 표현하므로 안을 비워둡니다.
         bubble.innerText = ''; 
         
         bubble.onclick = (e) => handlePop(e, bubble, data.score, data.id);

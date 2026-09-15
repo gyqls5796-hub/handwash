@@ -56,53 +56,63 @@
       pointer-events: none; 
     }
     
-    /* ☁️ 구름 거품 설정 */
+    /* ☁️ 거품과 세균을 묶어주는 전체 틀 (투명) */
     .bubble { 
       position: absolute; 
       width: 54px; height: 30px; 
-      background: #ffffff; border-radius: 30px;
-      box-shadow: 0 5px 8px rgba(0,0,0,0.12), inset 0 -4px 6px rgba(186, 230, 253, 0.6);
       cursor: pointer; 
       animation: floatCloud 2.5s infinite ease-in-out alternate; 
       -webkit-tap-highlight-color: transparent; z-index: 10;
-      
-      /* 세균을 가운데 정렬하기 위한 설정 */
-      display: flex; justify-content: center; align-items: center;
     }
 
-    .bubble::before {
+    /* 거품 둥둥 애니메이션 */
+    @keyframes floatCloud { 
+      0% { transform: translateY(0) scale(1); } 
+      100% { transform: translateY(-6px) scale(1.05); } 
+    }
+
+    .bubble:nth-child(odd) { animation-delay: -1s; }
+    .bubble:nth-child(3n) { animation-delay: -0.5s; }
+    .bubble:nth-child(odd) .germ { animation-delay: -0.8s; }
+    .bubble:nth-child(even) .germ { animation-delay: -0.3s; }
+
+    /* ☁️ 실제 하얀 구름 거품 모양 (앞쪽에 배치) */
+    .foam {
+      position: absolute;
+      width: 100%; height: 100%;
+      background: #ffffff; border-radius: 30px;
+      box-shadow: 0 5px 8px rgba(0,0,0,0.12), inset 0 -4px 6px rgba(186, 230, 253, 0.6);
+      z-index: 2; /* 거품을 앞으로 */
+    }
+
+    .foam::before {
       content: ''; position: absolute;
       top: -12px; left: 8px; width: 24px; height: 24px;
       background: #ffffff; border-radius: 50%;
     }
 
-    .bubble::after {
+    .foam::after {
       content: ''; position: absolute;
       top: -18px; right: 6px; width: 32px; height: 32px;
       background: #ffffff; border-radius: 50%;
     }
 
-    /* 🦠 거부감 없는 귀여운 세균 애니메이션 */
+    /* 🦠 거품 뒤에서 빼꼼 쳐다보는 세균 */
     .germ {
-      position: relative;
-      z-index: 2; /* 거품(가상요소) 위로 올라오게 설정 */
+      position: absolute;
+      /* 거품 뒤 왼쪽 위로 살짝 삐져나오게 배치 */
+      top: -22px; 
+      left: -2px; 
+      z-index: 1; /* 거품 뒤에 숨도록 z-index 낮춤! */
       font-size: 1.3rem;
-      filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
-      animation: wiggle 1.5s infinite ease-in-out;
+      filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
+      animation: peekWiggle 1.8s infinite ease-in-out;
     }
 
-    @keyframes wiggle {
-      0%, 100% { transform: rotate(-15deg) scale(1); }
-      50% { transform: rotate(15deg) scale(1.1); }
-    }
-
-    .bubble:nth-child(odd) { animation-delay: -1s; }
-    .bubble:nth-child(odd) .germ { animation-delay: -0.5s; }
-    .bubble:nth-child(3n) { animation-delay: -0.5s; }
-
-    @keyframes floatCloud { 
-      0% { transform: translateY(0) scale(1); } 
-      100% { transform: translateY(-6px) scale(1.05); } 
+    /* 빼꼼 애니메이션: 뒤에서 위아래로 씰룩이며 갸우뚱 */
+    @keyframes peekWiggle {
+      0%, 100% { transform: translateY(0) rotate(-15deg); }
+      50% { transform: translateY(-6px) rotate(15deg); }
     }
     
     .floating-score { position: absolute; font-size: 2rem; font-weight: bold; color: #f59e0b; text-shadow: 0 2px 4px rgba(0,0,0,0.2); pointer-events: none; animation: scoreUp 0.8s forwards; z-index: 20; }
@@ -218,8 +228,11 @@
         bubble.style.top = data.top;
         bubble.style.left = data.left;
         
-        // 🦠 거품 안에 귀여운 세균 추가!
-        bubble.innerHTML = '<div class="germ">🦠</div>'; 
+        // 💡 거품(foam)과 세균(germ)을 분리하여 레이어(z-index) 구조 완성!
+        bubble.innerHTML = `
+          <div class="germ">🦠</div>
+          <div class="foam"></div>
+        `; 
         
         bubble.onclick = (e) => handlePop(e, bubble, data.score, data.id);
         handContainer.appendChild(bubble);

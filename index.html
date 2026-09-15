@@ -56,10 +56,8 @@
       pointer-events: none; 
     }
     
-    /* ☁️ 거품 전체 틀 */
     .bubble { 
-      position: absolute; 
-      width: 54px; height: 30px; 
+      position: absolute; width: 54px; height: 30px; 
       cursor: pointer; 
       animation: floatCloud 2.5s infinite ease-in-out alternate; 
       -webkit-tap-highlight-color: transparent; z-index: 10;
@@ -73,13 +71,11 @@
     .bubble:nth-child(odd) { animation-delay: -1s; }
     .bubble:nth-child(3n) { animation-delay: -0.5s; }
 
-    /* ☁️ 하얀 구름 거품 모양 */
     .foam {
-      position: absolute;
-      width: 100%; height: 100%;
+      position: absolute; width: 100%; height: 100%;
       background: #ffffff; border-radius: 30px;
       box-shadow: 0 5px 8px rgba(0,0,0,0.12), inset 0 -4px 6px rgba(186, 230, 253, 0.6);
-      z-index: 2; /* 세균보다 앞 */
+      z-index: 2;
     }
     .foam::before {
       content: ''; position: absolute;
@@ -92,37 +88,37 @@
       background: #ffffff; border-radius: 50%;
     }
 
-    /* 🦠 세균 공통 스타일 */
+    /* 🦠 코드로 그린 캐릭터 세균 스타일 */
     .germ {
-      position: absolute;
-      z-index: 1; /* 거품 뒤에 숨기 */
-      font-size: 1.5rem;
-      filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
+      position: absolute; z-index: 1;
+      width: 38px; height: 38px;
     }
 
-    /* 🎯 1. 좌측 상단 빼꼼 */
-    .peek-tl { top: -22px; left: -5px; animation: wiggle-tl 2s infinite ease-in-out; }
+    /* 🎨 색상 필터 (눈과 입은 그대로 두고 몸통 색만 바꿈) */
+    .germ-green { filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2)) hue-rotate(0deg); }
+    .germ-blue { filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2)) hue-rotate(100deg); }
+    .germ-purple { filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2)) hue-rotate(200deg); }
+    .germ-red { filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2)) hue-rotate(300deg); }
+
+    .peek-tl { top: -25px; left: -8px; animation: wiggle-tl 2s infinite ease-in-out; }
     @keyframes wiggle-tl { 
       0%, 100% { transform: translateY(0) rotate(-15deg); } 
       50% { transform: translateY(-5px) rotate(10deg); } 
     }
 
-    /* 🎯 2. 우측 상단 빼꼼 */
-    .peek-tr { top: -22px; right: -5px; animation: wiggle-tr 2s infinite ease-in-out; }
+    .peek-tr { top: -25px; right: -8px; animation: wiggle-tr 2s infinite ease-in-out; }
     @keyframes wiggle-tr { 
       0%, 100% { transform: translateY(0) rotate(15deg); } 
       50% { transform: translateY(-5px) rotate(-10deg); } 
     }
 
-    /* 🎯 3. 좌측면 빼꼼 */
-    .peek-l { top: 0px; left: -18px; animation: wiggle-l 2s infinite ease-in-out; }
+    .peek-l { top: 0px; left: -22px; animation: wiggle-l 2s infinite ease-in-out; }
     @keyframes wiggle-l { 
       0%, 100% { transform: translateX(0) rotate(-35deg); } 
       50% { transform: translateX(-5px) rotate(-15deg); } 
     }
 
-    /* 🎯 4. 우측면 빼꼼 */
-    .peek-r { top: 0px; right: -18px; animation: wiggle-r 2s infinite ease-in-out; }
+    .peek-r { top: 0px; right: -22px; animation: wiggle-r 2s infinite ease-in-out; }
     @keyframes wiggle-r { 
       0%, 100% { transform: translateX(0) rotate(35deg); } 
       50% { transform: translateX(5px) rotate(15deg); } 
@@ -193,12 +189,31 @@
       { top: '70%', left: '38%', score: 3, id: '손바닥밑동' },      
       { top: '84%', left: '50%', score: 2, id: '손목' }             
     ];
-
-    // 캐릭터 이모지 리스트 (몬스터, 외계인, 악당 등 귀여운 느낌)
-    const germCharacters = ['🦠', '👾', '😈', '👽', '👻'];
     
-    // 4가지 빼꼼 위치 클래스 리스트
+    const germColors = ['germ-green', 'germ-blue', 'germ-purple', 'germ-red'];
     const peekDirections = ['peek-tl', 'peek-tr', 'peek-l', 'peek-r'];
+
+    // 💡 코드로 직접 그린 세균 캐릭터 (SVG 포맷)
+    const germCharacterSVG = `
+      <svg viewBox="0 0 100 100" width="100%" height="100%">
+        <!-- 둥근 몸통 -->
+        <path d="M50 10 C75 10 90 25 90 50 C90 75 75 90 50 90 C25 90 10 75 10 50 C10 25 25 10 50 10 Z" fill="#22c55e"/>
+        <!-- 두 손 -->
+        <circle cx="15" cy="65" r="9" fill="#16a34a"/>
+        <circle cx="85" cy="65" r="9" fill="#16a34a"/>
+        <!-- 하얀 눈 바탕 -->
+        <circle cx="35" cy="45" r="10" fill="#ffffff"/>
+        <circle cx="65" cy="45" r="10" fill="#ffffff"/>
+        <!-- 검은 눈동자 -->
+        <circle cx="35" cy="45" r="4" fill="#000000"/>
+        <circle cx="65" cy="45" r="4" fill="#000000"/>
+        <!-- 화난 악당 눈썹 -->
+        <line x1="22" y1="32" x2="45" y2="38" stroke="#000000" stroke-width="3" stroke-linecap="round"/>
+        <line x1="78" y1="32" x2="55" y2="38" stroke="#000000" stroke-width="3" stroke-linecap="round"/>
+        <!-- 억울한 표정의 입 -->
+        <path d="M42 68 Q50 62 58 68" stroke="#000000" stroke-width="3" fill="transparent" stroke-linecap="round"/>
+      </svg>
+    `;
 
     let score = 0;
     let popsRemaining = 3;
@@ -250,13 +265,14 @@
         bubble.style.top = data.top;
         bubble.style.left = data.left;
         
-        // 💡 랜덤 캐릭터와 랜덤 빼꼼 위치를 추출합니다!
-        const randomCharacter = germCharacters[Math.floor(Math.random() * germCharacters.length)];
+        const randomColor = germColors[Math.floor(Math.random() * germColors.length)];
         const randomDirection = peekDirections[Math.floor(Math.random() * peekDirections.length)];
 
-        // 빼꼼 위치 클래스(randomDirection)와 캐릭터(randomCharacter)를 동적으로 삽입
+        // 코드로 만든 캐릭터(SVG)를 거품 안에 쏙 넣어줍니다.
         bubble.innerHTML = `
-          <div class="germ ${randomDirection}">${randomCharacter}</div>
+          <div class="germ ${randomDirection} ${randomColor}">
+            ${germCharacterSVG}
+          </div>
           <div class="foam"></div>
         `; 
         

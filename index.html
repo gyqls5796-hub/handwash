@@ -14,7 +14,7 @@
 
     /* 상단 UI */
     .header {
-      width: 100%; padding: 20px 0; display: none; /* 시작화면에선 숨김 */
+      width: 100%; padding: 20px 0; display: none; 
       justify-content: space-around; background: white;
       box-shadow: 0 4px 10px rgba(0,0,0,0.05); z-index: 10;
     }
@@ -29,10 +29,10 @@
     }
     .intro-title { font-size: 2rem; color: #0ea5e9; margin-bottom: 30px; font-weight: bold;}
     .input-group { margin-bottom: 20px; width: 80%; max-width: 300px; }
-    .input-group label { display: block; font-size: 1.1rem; color: #475569; margin-bottom: 8px; }
+    .input-group label { display: block; font-size: 1.1rem; color: #475569; margin-bottom: 8px; font-weight: bold;}
     .input-group input {
       width: 100%; padding: 15px; font-size: 1.2rem; border: 2px solid #bae6fd;
-      border-radius: 12px; outline: none; text-align: center;
+      border-radius: 12px; outline: none; text-align: center; box-sizing: border-box;
     }
     .input-group input:focus { border-color: #0ea5e9; }
     
@@ -44,9 +44,30 @@
 
     /* 게임 화면 */
     #game-area {
-      flex: 1; display: none; justify-content: center; align-items: center; width: 100%; position: relative;
+      flex: 1; display: none; flex-direction: column; justify-content: center; align-items: center; width: 100%; position: relative;
     }
-    .hand-container { position: relative; width: 320px; height: 400px; display: flex; justify-content: center; align-items: center; font-size: 18rem; line-height: 1; }
+    
+    /* 추가된 질문 텍스트 스타일 */
+    .question-text {
+      font-size: 1.3rem;
+      color: #0f172a;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 20px;
+      padding: 0 20px;
+      line-height: 1.4;
+      z-index: 5;
+    }
+
+    /* 고화질 손 이미지 컨테이너 */
+    .hand-container { position: relative; width: 320px; height: 420px; display: flex; justify-content: center; align-items: center; }
+    .hand-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 15px 25px rgba(0,0,0,0.15)); /* 그림자 효과로 고급스러움 추가 */
+      pointer-events: none; /* 이미지가 터치를 방해하지 않게 함 */
+    }
     
     /* 비누방울 및 애니메이션 */
     .bubble { position: absolute; width: 50px; height: 50px; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.95), rgba(186, 230, 253, 0.8)); border: 1px solid rgba(255,255,255,0.8); border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15); cursor: pointer; animation: float 2s infinite ease-in-out alternate; -webkit-tap-highlight-color: transparent; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; }
@@ -70,17 +91,14 @@
   <!-- 1. 정보 입력 화면 -->
   <div id="intro-screen">
     <div class="intro-title">Ready to Wash? 🫧</div>
-    
     <div class="input-group">
       <label>Name</label>
       <input type="text" id="user-name" placeholder="Enter your name">
     </div>
-    
     <div class="input-group">
       <label>Age</label>
       <input type="number" id="user-age" placeholder="Enter your age">
     </div>
-
     <button class="start-btn" onclick="startGame()">Start!</button>
   </div>
 
@@ -92,7 +110,13 @@
 
   <!-- 3. 게임 영역 -->
   <div id="game-area">
-    <div class="hand-container" id="hand">🖐🏼</div>
+    <!-- 요청하신 추가 문구 -->
+    <div class="question-text">Where should we pay more attention to wash?</div>
+    
+    <div class="hand-container" id="hand">
+      <!-- 이모지 대신 고화질 손 이미지 적용 (src 주소를 다른 이미지로 언제든 바꿀 수 있습니다) -->
+      <img src="https://cdn-icons-png.flaticon.com/512/2510/2510651.png" alt="Hand Image" class="hand-image">
+    </div>
   </div>
 
   <!-- 4. 결과 화면 -->
@@ -105,19 +129,19 @@
   </div>
 
   <script>
-    // 주소는 그대로 유지했습니다.
     const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbwg6YI0G06IpcCW8HHWOdd-gH40BMdgiP8O48xRAVNE8uirN3vq6rn-ty9lm66uJH01/exec";
 
+    // 이미지가 바뀌면서 위치(좌표)를 고화질 이미지 형태에 맞춰 미세조정했습니다.
     const bubbleData = [
-      { top: '10%', left: '48%', score: 5, id: '손톱밑(중지)' }, 
-      { top: '18%', left: '28%', score: 5, id: '손톱밑(검지)' },  
-      { top: '18%', left: '68%', score: 5, id: '손톱밑(약지)' },   
-      { top: '35%', left: '40%', score: 4, id: '손가락사이(1)' },         
-      { top: '35%', left: '55%', score: 4, id: '손가락사이(2)' },         
-      { top: '48%', left: '15%', score: 3, id: '엄지' },             
+      { top: '3%', left: '46%', score: 5, id: '손톱밑(중지)' }, 
+      { top: '12%', left: '26%', score: 5, id: '손톱밑(검지)' },  
+      { top: '15%', left: '68%', score: 5, id: '손톱밑(약지)' },   
+      { top: '30%', left: '38%', score: 4, id: '손가락사이(1)' },         
+      { top: '32%', left: '55%', score: 4, id: '손가락사이(2)' },         
+      { top: '48%', left: '10%', score: 3, id: '엄지' },             
       { top: '85%', left: '48%', score: 2, id: '손목' },             
-      { top: '55%', left: '48%', score: 1, id: '손바닥(중앙)' },       
-      { top: '65%', left: '35%', score: 1, id: '손바닥(좌)' },         
+      { top: '55%', left: '46%', score: 1, id: '손바닥(중앙)' },       
+      { top: '65%', left: '32%', score: 1, id: '손바닥(좌)' },         
       { top: '65%', left: '65%', score: 1, id: '손바닥(우)' }         
     ];
 
@@ -126,7 +150,6 @@
     let isGameOver = false;
     let clickedHistory = [];
     
-    // 유저 정보 저장 변수
     let userName = "";
     let userAge = "";
 
@@ -138,7 +161,6 @@
     const header = document.getElementById('header');
     const gameArea = document.getElementById('game-area');
 
-    // 게임 시작 버튼 눌렀을 때
     function startGame() {
       userName = document.getElementById('user-name').value.trim();
       userAge = document.getElementById('user-age').value.trim();
@@ -196,10 +218,7 @@
 
       if (popsRemaining === 0) {
         isGameOver = true;
-        
-        // 데이터 전송 시 이름과 나이도 함께 보냅니다!
         sendDataToGoogleSheet(userName, userAge, score, clickedHistory);
-
         setTimeout(showResult, 800); 
       }
     }
@@ -243,7 +262,6 @@
       resultScreen.style.display = 'flex';
     }
 
-    // 처음 화면(입력창)으로 돌아가는 함수
     function resetToHome() {
       document.getElementById('user-name').value = "";
       document.getElementById('user-age').value = "";
@@ -254,7 +272,6 @@
     }
 
     function sendDataToGoogleSheet(nameData, ageData, finalScore, historyArray) {
-      // payload에 이름과 나이 추가
       const dataPayload = {
         name: nameData,
         age: ageData,
@@ -265,12 +282,10 @@
       fetch(GOOGLE_SHEET_URL, {
         method: 'POST',
         mode: 'no-cors',
-        headers: {
-          'Content-Type': 'text/plain;charset=utf-8'
-        },
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify(dataPayload)
       })
-      .then(() => console.log("구글 시트로 전송 요청 완료 (no-cors)"))
+      .then(() => console.log("전송 완료"))
       .catch(error => console.error("전송 실패:", error));
     }
   </script>

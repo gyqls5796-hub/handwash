@@ -12,7 +12,6 @@
       height: 100vh; overflow: hidden; touch-action: manipulation; user-select: none;
     }
 
-    /* 상단 UI */
     .header {
       width: 100%; padding: 20px 0; display: none; 
       justify-content: space-around; background: white;
@@ -22,7 +21,6 @@
     .status-label { font-size: 0.9rem; color: #94a3b8; letter-spacing: 1px; }
     .status-value { font-size: 2rem; font-weight: 900; color: #0ea5e9; }
 
-    /* 입력(시작) 화면 */
     #intro-screen {
       flex: 1; display: flex; flex-direction: column;
       justify-content: center; align-items: center; width: 100%; z-index: 100;
@@ -42,20 +40,13 @@
       box-shadow: 0 4px 15px rgba(14, 165, 233, 0.4); cursor: pointer;
     }
 
-    /* 게임 화면 */
     #game-area {
       flex: 1; display: none; flex-direction: column; justify-content: center; align-items: center; width: 100%; position: relative;
     }
     
     .question-text {
-      font-size: 1.3rem;
-      color: #0f172a;
-      font-weight: 800;
-      text-align: center;
-      margin-bottom: 20px;
-      padding: 0 20px;
-      line-height: 1.4;
-      z-index: 5;
+      font-size: 1.3rem; color: #0f172a; font-weight: 800; text-align: center;
+      margin-bottom: 20px; padding: 0 20px; line-height: 1.4; z-index: 5;
     }
 
     .hand-container { position: relative; width: 320px; height: 420px; display: flex; justify-content: center; align-items: center; }
@@ -65,47 +56,28 @@
       pointer-events: none; 
     }
     
-    /* ☁️ 완벽한 구름(Cloud) 형태의 비누 거품 디자인 */
     .bubble { 
       position: absolute; 
-      /* 구름의 몸통(밑받침) */
-      width: 54px; 
-      height: 30px; 
-      background: #ffffff;
-      border-radius: 30px;
-      /* 구름 전체 그림자 + 거품 특유의 연한 푸른빛 밑단 */
+      width: 54px; height: 30px; 
+      background: #ffffff; border-radius: 30px;
       box-shadow: 0 5px 8px rgba(0,0,0,0.12), inset 0 -4px 6px rgba(186, 230, 253, 0.6);
       cursor: pointer; 
       animation: floatCloud 2.5s infinite ease-in-out alternate; 
-      -webkit-tap-highlight-color: transparent; 
-      z-index: 10;
+      -webkit-tap-highlight-color: transparent; z-index: 10;
     }
 
-    /* 구름의 왼쪽 윗부분 (작은 둥근 덩어리) */
     .bubble::before {
-      content: ''; 
-      position: absolute;
-      top: -12px; 
-      left: 8px;
-      width: 24px; 
-      height: 24px;
-      background: #ffffff;
-      border-radius: 50%;
+      content: ''; position: absolute;
+      top: -12px; left: 8px; width: 24px; height: 24px;
+      background: #ffffff; border-radius: 50%;
     }
 
-    /* 구름의 오른쪽 윗부분 (큰 둥근 덩어리) */
     .bubble::after {
-      content: ''; 
-      position: absolute;
-      top: -18px; 
-      right: 6px;
-      width: 32px; 
-      height: 32px;
-      background: #ffffff;
-      border-radius: 50%;
+      content: ''; position: absolute;
+      top: -18px; right: 6px; width: 32px; height: 32px;
+      background: #ffffff; border-radius: 50%;
     }
 
-    /* 둥둥 떠다니는 애니메이션 속도 다르게 섞기 */
     .bubble:nth-child(odd) { animation-delay: -1s; }
     .bubble:nth-child(3n) { animation-delay: -0.5s; }
 
@@ -114,11 +86,9 @@
       100% { transform: translateY(-6px) scale(1.05); } 
     }
     
-    /* 터졌을 때 점수 텍스트 */
     .floating-score { position: absolute; font-size: 2rem; font-weight: bold; color: #f59e0b; text-shadow: 0 2px 4px rgba(0,0,0,0.2); pointer-events: none; animation: scoreUp 0.8s forwards; z-index: 20; }
     @keyframes scoreUp { 0% { transform: translateY(0) scale(1); opacity: 1; } 100% { transform: translateY(-40px) scale(1.5); opacity: 0; } }
 
-    /* 결과 화면 */
     #result-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 50; backdrop-filter: blur(5px); }
     .result-title { font-size: 2rem; color: #0f172a; margin-bottom: 10px; }
     .final-score { font-size: 5rem; font-weight: 900; color: #0ea5e9; margin: 10px 0; }
@@ -151,7 +121,6 @@
     <div class="question-text">Where should we pay more attention to wash?</div>
     
     <div class="hand-container" id="hand">
-      <!-- 깃허브에 올리신 내 사진 파일 -->
       <img src="hand.png" alt="Hand Image" class="hand-image">
     </div>
   </div>
@@ -167,18 +136,18 @@
   <script>
     const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbwg6YI0G06IpcCW8HHWOdd-gH40BMdgiP8O48xRAVNE8uirN3vq6rn-ty9lm66uJH01/exec";
 
-    // 구름 모양으로 변경되면서 좌표 기준점이 살짝 달라졌습니다. (미세조정이 필요할 수 있습니다)
+    // 🎯 빨간 동그라미 이미지에 맞춰 정밀하게 재조정된 좌표값입니다.
     const bubbleData = [
-      { top: '3%', left: '46%', score: 5, id: '손톱밑(중지)' }, 
-      { top: '12%', left: '26%', score: 5, id: '손톱밑(검지)' },  
-      { top: '15%', left: '68%', score: 5, id: '손톱밑(약지)' },   
-      { top: '30%', left: '38%', score: 4, id: '손가락사이(1)' },         
-      { top: '32%', left: '55%', score: 4, id: '손가락사이(2)' },         
-      { top: '48%', left: '10%', score: 3, id: '엄지' },             
-      { top: '85%', left: '48%', score: 2, id: '손목' },             
-      { top: '55%', left: '46%', score: 1, id: '손바닥(중앙)' },       
-      { top: '65%', left: '32%', score: 1, id: '손바닥(좌)' },         
-      { top: '65%', left: '65%', score: 1, id: '손바닥(우)' }         
+      { top: '3%', left: '38%', score: 5, id: '중지끝' },          // ① 가장 위쪽 (중지 끝)
+      { top: '20%', left: '41%', score: 4, id: '중지마디' },        // ② 두 번째 (중지 마디)
+      { top: '32%', left: '79%', score: 5, id: '엄지끝' },          // ③ 오른쪽 끝 (엄지)
+      { top: '38%', left: '17%', score: 4, id: '새끼손가락아래' },   // ④ 왼쪽 위 (새끼 밑)
+      { top: '39%', left: '53%', score: 5, id: '검지아래' },        // ⑤ 중앙 우측상단 (검지 밑)
+      { top: '48%', left: '30%', score: 1, id: '손바닥(중앙좌)' },   // ⑥ 중앙 좌측
+      { top: '55%', left: '58%', score: 1, id: '손바닥(중앙우)' },   // ⑦ 중앙 우측하단
+      { top: '61%', left: '17%', score: 1, id: '손바닥(좌측하단)' }, // ⑧ 왼쪽 아래
+      { top: '70%', left: '38%', score: 3, id: '손바닥밑동' },      // ⑨ 아래쪽 중앙 (손바닥 밑)
+      { top: '84%', left: '50%', score: 2, id: '손목' }             // ⑩ 가장 아래쪽 (손목)
     ];
 
     let score = 0;

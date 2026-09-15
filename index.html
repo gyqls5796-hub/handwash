@@ -47,7 +47,6 @@
       flex: 1; display: none; flex-direction: column; justify-content: center; align-items: center; width: 100%; position: relative;
     }
     
-    /* 추가된 질문 텍스트 스타일 */
     .question-text {
       font-size: 1.3rem;
       color: #0f172a;
@@ -59,23 +58,63 @@
       z-index: 5;
     }
 
-    /* 고화질 손 이미지 컨테이너 */
     .hand-container { position: relative; width: 320px; height: 420px; display: flex; justify-content: center; align-items: center; }
     .hand-image {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      filter: drop-shadow(0 15px 25px rgba(0,0,0,0.15)); /* 그림자 효과 */
-      pointer-events: none; /* 이미지가 터치를 방해하지 않게 함 */
+      width: 100%; height: 100%; object-fit: contain;
+      filter: drop-shadow(0 15px 25px rgba(0,0,0,0.15)); 
+      pointer-events: none; 
     }
     
-    /* 비누방울 및 애니메이션 */
-    .bubble { position: absolute; width: 50px; height: 50px; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.95), rgba(186, 230, 253, 0.8)); border: 1px solid rgba(255,255,255,0.8); border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15); cursor: pointer; animation: float 2s infinite ease-in-out alternate; -webkit-tap-highlight-color: transparent; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; }
-    .bubble:nth-child(odd) { animation-delay: -1s; }
-    .bubble:nth-child(3n) { animation-delay: -0.5s; }
+    /* ☁️ 완전히 새로워진 비누 거품(Foam) 스타일 */
+    .bubble { 
+      position: absolute; 
+      width: 45px; height: 45px; 
+      /* 하얗고 뽀얀 거품 그라데이션 */
+      background: radial-gradient(circle at 25% 25%, #ffffff 30%, #e0f2fe 90%);
+      /* 정원이 아닌 자연스러운 물결 모양(Blob) */
+      border-radius: 45% 55% 40% 60% / 55% 45% 60% 40%;
+      /* 3D 입체감을 주는 그림자 */
+      box-shadow: 
+        inset 4px 4px 6px rgba(255,255,255,0.9),
+        inset -2px -2px 5px rgba(186, 230, 253, 0.5),
+        0 6px 12px rgba(0,0,0,0.1);
+      cursor: pointer; 
+      /* 둥둥 떠다니며 모양이 스르륵 변하는 이중 애니메이션 */
+      animation: float 2s infinite ease-in-out alternate, morph 3s infinite ease-in-out; 
+      -webkit-tap-highlight-color: transparent; 
+      z-index: 10;
+    }
+
+    /* 거품 덩어리 디테일: 옆에 붙어있는 작은 거품 1 */
+    .bubble::before {
+      content: ''; position: absolute;
+      width: 25px; height: 25px; top: -5px; left: -8px;
+      background: radial-gradient(circle at 20% 20%, #ffffff 30%, #e0f2fe 90%);
+      border-radius: 50% 60% 40% 50%;
+      box-shadow: inset 2px 2px 4px rgba(255,255,255,0.9), inset -1px -1px 3px rgba(186, 230, 253, 0.4);
+    }
+
+    /* 거품 덩어리 디테일: 옆에 붙어있는 작은 거품 2 */
+    .bubble::after {
+      content: ''; position: absolute;
+      width: 28px; height: 28px; bottom: -4px; right: -6px;
+      background: radial-gradient(circle at 30% 20%, #ffffff 30%, #e0f2fe 90%);
+      border-radius: 40% 50% 60% 50%;
+      box-shadow: inset 2px 2px 4px rgba(255,255,255,0.9), inset -1px -1px 3px rgba(186, 230, 253, 0.4);
+    }
+
+    .bubble:nth-child(odd) { animation-delay: -1s, 0s; }
+    .bubble:nth-child(3n) { animation-delay: -0.5s, -1s; }
+
+    /* 거품 모양이 꿈틀거리는 애니메이션 */
+    @keyframes morph {
+      0% { border-radius: 45% 55% 40% 60% / 55% 45% 60% 40%; }
+      50% { border-radius: 55% 45% 60% 40% / 45% 55% 40% 60%; }
+      100% { border-radius: 45% 55% 40% 60% / 55% 45% 60% 40%; }
+    }
+
     @keyframes float { 0% { transform: translateY(0) scale(1); } 100% { transform: translateY(-8px) scale(1.05); } }
     
-    /* 점수 텍스트 애니메이션 */
     .floating-score { position: absolute; font-size: 2rem; font-weight: bold; color: #f59e0b; text-shadow: 0 2px 4px rgba(0,0,0,0.2); pointer-events: none; animation: scoreUp 0.8s forwards; z-index: 20; }
     @keyframes scoreUp { 0% { transform: translateY(0) scale(1); opacity: 1; } 100% { transform: translateY(-40px) scale(1.5); opacity: 0; } }
 
@@ -90,7 +129,6 @@
 </head>
 <body>
 
-  <!-- 1. 정보 입력 화면 -->
   <div id="intro-screen">
     <div class="intro-title">Ready to Wash? 🫧</div>
     <div class="input-group">
@@ -104,24 +142,19 @@
     <button class="start-btn" onclick="startGame()">Start!</button>
   </div>
 
-  <!-- 2. 상단 상태바 -->
   <div class="header" id="header">
     <div class="status-box"><div class="status-label">POPS LEFT</div><div class="status-value" id="pops-left">3</div></div>
     <div class="status-box"><div class="status-label">SCORE</div><div class="status-value" id="current-score">0</div></div>
   </div>
 
-  <!-- 3. 게임 영역 -->
   <div id="game-area">
-    <!-- 질문 텍스트 -->
     <div class="question-text">Where should we pay more attention to wash?</div>
     
     <div class="hand-container" id="hand">
-      <!-- ★ 방금 깃허브에 올리신 내 사진을 불러오는 코드입니다! -->
       <img src="hand.png" alt="Hand Image" class="hand-image">
     </div>
   </div>
 
-  <!-- 4. 결과 화면 -->
   <div id="result-screen">
     <div class="result-title">Your Score</div>
     <div class="final-score" id="final-score-display">0</div>
@@ -131,10 +164,8 @@
   </div>
 
   <script>
-    // 구글 시트 URL
     const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbwg6YI0G06IpcCW8HHWOdd-gH40BMdgiP8O48xRAVNE8uirN3vq6rn-ty9lm66uJH01/exec";
 
-    // 나중에 내 손 사진에 맞춰서 퍼센트 숫자(top, left)를 미세조정하시면 됩니다.
     const bubbleData = [
       { top: '3%', left: '46%', score: 5, id: '손톱밑(중지)' }, 
       { top: '12%', left: '26%', score: 5, id: '손톱밑(검지)' },  
@@ -197,7 +228,9 @@
         bubble.className = 'bubble';
         bubble.style.top = data.top;
         bubble.style.left = data.left;
-        bubble.innerText = '🫧'; 
+        
+        // 이모지 대신 CSS로 거품 덩어리를 표현하므로 안을 비워둡니다.
+        bubble.innerText = ''; 
         
         bubble.onclick = (e) => handlePop(e, bubble, data.score, data.id);
         handContainer.appendChild(bubble);

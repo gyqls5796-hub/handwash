@@ -12,6 +12,16 @@
       height: 100vh; overflow: hidden; touch-action: manipulation; user-select: none;
     }
 
+    /* 💡 브라우저 번역기를 속이기 위한 투명 텍스트 박스 */
+    .translation-trigger {
+      position: absolute;
+      width: 1px; height: 1px;
+      margin: -1px; padding: 0;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+
     .header {
       width: 100%; padding: 20px 0; display: none; 
       justify-content: space-around; background: white;
@@ -88,41 +98,23 @@
       background: #ffffff; border-radius: 50%;
     }
 
-    /* 🦠 코드로 그린 캐릭터 세균 스타일 */
     .germ {
-      position: absolute; z-index: 1;
-      width: 38px; height: 38px;
+      position: absolute; z-index: 1; width: 38px; height: 38px;
     }
 
-    /* 🎨 색상 필터 (눈과 입은 그대로 두고 몸통 색만 바꿈) */
     .germ-green { filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2)) hue-rotate(0deg); }
     .germ-blue { filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2)) hue-rotate(100deg); }
     .germ-purple { filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2)) hue-rotate(200deg); }
     .germ-red { filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2)) hue-rotate(300deg); }
 
     .peek-tl { top: -25px; left: -8px; animation: wiggle-tl 2s infinite ease-in-out; }
-    @keyframes wiggle-tl { 
-      0%, 100% { transform: translateY(0) rotate(-15deg); } 
-      50% { transform: translateY(-5px) rotate(10deg); } 
-    }
-
+    @keyframes wiggle-tl { 0%, 100% { transform: translateY(0) rotate(-15deg); } 50% { transform: translateY(-5px) rotate(10deg); } }
     .peek-tr { top: -25px; right: -8px; animation: wiggle-tr 2s infinite ease-in-out; }
-    @keyframes wiggle-tr { 
-      0%, 100% { transform: translateY(0) rotate(15deg); } 
-      50% { transform: translateY(-5px) rotate(-10deg); } 
-    }
-
+    @keyframes wiggle-tr { 0%, 100% { transform: translateY(0) rotate(15deg); } 50% { transform: translateY(-5px) rotate(-10deg); } }
     .peek-l { top: 0px; left: -22px; animation: wiggle-l 2s infinite ease-in-out; }
-    @keyframes wiggle-l { 
-      0%, 100% { transform: translateX(0) rotate(-35deg); } 
-      50% { transform: translateX(-5px) rotate(-15deg); } 
-    }
-
+    @keyframes wiggle-l { 0%, 100% { transform: translateX(0) rotate(-35deg); } 50% { transform: translateX(-5px) rotate(-15deg); } }
     .peek-r { top: 0px; right: -22px; animation: wiggle-r 2s infinite ease-in-out; }
-    @keyframes wiggle-r { 
-      0%, 100% { transform: translateX(0) rotate(35deg); } 
-      50% { transform: translateX(5px) rotate(15deg); } 
-    }
+    @keyframes wiggle-r { 0%, 100% { transform: translateX(0) rotate(35deg); } 50% { transform: translateX(5px) rotate(15deg); } }
 
     .bubble:nth-child(odd) .germ { animation-delay: -0.7s; }
     .bubble:nth-child(even) .germ { animation-delay: -0.3s; }
@@ -139,6 +131,14 @@
   </style>
 </head>
 <body>
+
+  <!-- 💡 브라우저가 영문 문서로 인식하도록 돕는 보이지 않는 설명문 (화면엔 안 보입니다) -->
+  <div class="translation-trigger">
+    Welcome to the Hand Washing Education Game. Proper hand washing is the most effective way to prevent infections and stay healthy. 
+    Please enter your name and age to start the game. In this game, you will find the hidden blind spots on your hands, 
+    such as your fingertips, under your nails, and between your fingers. Pop the soap foam bubbles to wash these areas perfectly. 
+    Good luck and try to achieve the highest score!
+  </div>
 
   <div id="intro-screen">
     <div class="intro-title">Ready to Wash? 🫧</div>
@@ -193,24 +193,17 @@
     const germColors = ['germ-green', 'germ-blue', 'germ-purple', 'germ-red'];
     const peekDirections = ['peek-tl', 'peek-tr', 'peek-l', 'peek-r'];
 
-    // 💡 코드로 직접 그린 세균 캐릭터 (SVG 포맷)
     const germCharacterSVG = `
       <svg viewBox="0 0 100 100" width="100%" height="100%">
-        <!-- 둥근 몸통 -->
         <path d="M50 10 C75 10 90 25 90 50 C90 75 75 90 50 90 C25 90 10 75 10 50 C10 25 25 10 50 10 Z" fill="#22c55e"/>
-        <!-- 두 손 -->
         <circle cx="15" cy="65" r="9" fill="#16a34a"/>
         <circle cx="85" cy="65" r="9" fill="#16a34a"/>
-        <!-- 하얀 눈 바탕 -->
         <circle cx="35" cy="45" r="10" fill="#ffffff"/>
         <circle cx="65" cy="45" r="10" fill="#ffffff"/>
-        <!-- 검은 눈동자 -->
         <circle cx="35" cy="45" r="4" fill="#000000"/>
         <circle cx="65" cy="45" r="4" fill="#000000"/>
-        <!-- 화난 악당 눈썹 -->
         <line x1="22" y1="32" x2="45" y2="38" stroke="#000000" stroke-width="3" stroke-linecap="round"/>
         <line x1="78" y1="32" x2="55" y2="38" stroke="#000000" stroke-width="3" stroke-linecap="round"/>
-        <!-- 억울한 표정의 입 -->
         <path d="M42 68 Q50 62 58 68" stroke="#000000" stroke-width="3" fill="transparent" stroke-linecap="round"/>
       </svg>
     `;
@@ -268,7 +261,6 @@
         const randomColor = germColors[Math.floor(Math.random() * germColors.length)];
         const randomDirection = peekDirections[Math.floor(Math.random() * peekDirections.length)];
 
-        // 코드로 만든 캐릭터(SVG)를 거품 안에 쏙 넣어줍니다.
         bubble.innerHTML = `
           <div class="germ ${randomDirection} ${randomColor}">
             ${germCharacterSVG}
@@ -325,13 +317,13 @@
 
       if (score >= 13) {
         stars = "⭐⭐⭐";
-        msg = `Perfect, ${userName}! 🎁<br>You found all the hidden blind spots!`;
+        msg = `Perfect! 🎁<br>You found all the hidden blind spots!`;
       } else if (score >= 8) {
         stars = "⭐⭐";
-        msg = `Good job, ${userName}! 👍<br>But don't forget to wash under your fingernails!`;
+        msg = `Good job! 👍<br>But don't forget to wash under your fingernails!`;
       } else {
         stars = "⭐";
-        msg = `Oops, ${userName}! 😅<br>Washing only the palm isn't enough.`;
+        msg = `Oops! 😅<br>Washing only the palm isn't enough.`;
       }
 
       document.getElementById('star-display').innerText = stars;

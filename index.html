@@ -12,47 +12,36 @@
       height: 100vh; overflow: hidden; touch-action: manipulation; user-select: none;
     }
 
-    /* 🌐 1. 번역기 위치 고정 */
+    /* 🛡️ 1. 구글 번역기 원본은 화면에서 완전히 숨김 (디자인 충돌 방지) */
     #google_translate_element {
-      position: fixed !important;
-      top: 15px !important; 
-      right: 15px !important;
-      z-index: 99999 !important;
+      position: absolute;
+      opacity: 0;
+      z-index: -100;
+      pointer-events: none;
     }
 
-    /* 🌐 2. "Powered by Google" 텍스트 투명하게 숨기기 */
-    .goog-te-gadget {
-      font-size: 0px !important;
-      color: transparent !important;
+    /* 💎 2. 우리가 만든 예쁜 커스텀 언어 선택 버튼 */
+    .custom-lang-selector {
+      position: fixed;
+      top: 15px; 
+      right: 15px;
+      z-index: 99999;
+      font-family: 'Arial Rounded MT Bold', -apple-system, sans-serif;
+      font-size: 14px;
+      color: #0f172a;
+      padding: 8px 12px;
+      border-radius: 20px;
+      border: 2px solid #bae6fd;
+      background-color: white;
+      outline: none;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      font-weight: bold;
+      cursor: pointer;
     }
 
-    /* 🌐 3. [핵심 수정] 껍데기는 놔두고 '구글 로고 이미지'만 핀셋 제거! */
-    .goog-te-gadget .goog-logo-link,
-    .goog-te-gadget img {
-      display: none !important;
-    }
-
-    /* 🌐 4. 기획자님이 원하셨던 깔끔한 네이티브 드롭다운 디자인 */
-    .goog-te-combo {
-      font-family: 'Arial Rounded MT Bold', -apple-system, sans-serif !important;
-      font-size: 14px !important;
-      color: #0f172a !important;
-      padding: 8px 12px !important;
-      border-radius: 20px !important;
-      border: 2px solid #bae6fd !important;
-      background-color: white !important;
-      outline: none !important;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05) !important;
-      font-weight: bold !important;
-      cursor: pointer !important;
-      margin: 0 !important;
-    }
-
-    /* 🚫 5. 구글 번역 상단 띠(배너) 완벽 박멸 및 화면 밀림 방지 */
+    /* 🚫 3. 구글 번역 상단 띠(배너) 및 팝업 완벽 박멸 */
     .goog-te-banner-frame { display: none !important; }
     body { top: 0px !important; position: static !important; }
-
-    /* 🚫 6. 번역된 글자 팝업 툴팁과 노란색 형광펜 효과 차단 */
     #goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
     .goog-text-highlight { background: none !important; box-shadow: none !important; }
 
@@ -167,8 +156,13 @@
 </head>
 <body>
 
-  <!-- 🌐 구글 번역 드롭다운이 들어갈 자리 -->
+  <!-- 🌐 숨겨진 구글 번역기 원본 -->
   <div id="google_translate_element"></div>
+
+  <!-- 💎 우리가 제어하는 커스텀 언어 선택 버튼 -->
+  <select id="custom_lang_select" class="custom-lang-selector">
+    <option value="">🌐 Language</option>
+  </select>
 
   <div id="intro-screen">
     <div class="intro-title">Ready to Wash? 🫧</div>
@@ -204,12 +198,11 @@
     <button class="reset-btn" onclick="resetToHome()">Home 🏠</button>
   </div>
 
-  <!-- 🌐 구글 번역 스크립트 (SIMPLE 옵션 복구 완료) -->
+  <!-- 🌐 구글 번역 스크립트 -->
   <script type="text/javascript">
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({
         pageLanguage: 'en',
-        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
         autoDisplay: false
       }, 'google_translate_element');
     }
@@ -217,6 +210,33 @@
   <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
   <script>
+    // 💡 [핵심] 구글 번역기의 언어 목록을 몰래 가져와서 우리 버튼에 복사하는 마법의 코드
+    document.addEventListener("DOMContentLoaded", function() {
+      let checkGoogleLoad = setInterval(function() {
+        let googleSelect = document.querySelector('.goog-te-combo');
+        let customSelect = document.getElementById('custom_lang_select');
+
+        // 구글 번역기가 다 로딩되면
+        if (googleSelect && googleSelect.options.length > 0) {
+          clearInterval(checkGoogleLoad); // 반복 체크 종료
+          
+          // 구글의 모든 언어 리스트를 우리 버튼에 복사
+          for (let i = 1; i < googleSelect.options.length; i++) {
+            let opt = document.createElement('option');
+            opt.value = googleSelect.options[i].value;
+            opt.innerHTML = googleSelect.options[i].innerHTML;
+            customSelect.appendChild(opt);
+          }
+
+          // 우리 버튼에서 언어를 선택하면, 숨겨진 구글 번역기를 원격 조종!
+          customSelect.addEventListener('change', function() {
+            googleSelect.value = this.value;
+            googleSelect.dispatchEvent(new Event('change', { bubbles: true }));
+          });
+        }
+      }, 300);
+    });
+
     const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbwg6YI0G06IpcCW8HHWOdd-gH40BMdgiP8O48xRAVNE8uirN3vq6rn-ty9lm66uJH01/exec";
 
     const bubbleData = [

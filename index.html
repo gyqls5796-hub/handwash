@@ -12,58 +12,30 @@
       height: 100vh; overflow: hidden; touch-action: manipulation; user-select: none;
     }
 
-    /* 🌐 1. 구글 번역기 컨테이너 위치 고정 */
-    #google_translate_element {
+    /* 🛡️ 구글 번역기 위치 고정 (우측 상단) */
+    #translate-wrapper {
       position: fixed !important;
       top: 15px !important; 
       right: 15px !important;
       z-index: 99999 !important;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 4px 8px;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
     }
 
-    /* 🌐 2. 구글 특유의 지저분한 글자(Powered by 등) 숨기기 */
-    .goog-te-gadget {
-      font-size: 0px !important;
-      color: transparent !important;
-    }
-
-    /* 🌐 3. 구글 로고 이미지 숨기기 */
-    .goog-te-gadget span { display: none !important; }
-    .goog-logo-link { display: none !important; }
-
-    /* 🌐 4. 우리가 원하는 깔끔한 드롭다운(Select) 박스 디자인 */
-    .goog-te-combo {
-      font-family: 'Arial Rounded MT Bold', -apple-system, sans-serif !important;
-      font-size: 14px !important;
-      color: #0f172a !important;
-      padding: 8px 12px !important;
-      border-radius: 20px !important;
-      border: 2px solid #bae6fd !important;
-      background-color: white !important;
-      outline: none !important;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05) !important;
-      font-weight: bold !important;
-      cursor: pointer !important;
-    }
-
-    /* 🚫 5. [핵심] 구글 번역 상단 띠(배너) 완벽 박멸 */
-    iframe.goog-te-banner-frame { 
-      display: none !important; 
-    }
-    .goog-te-banner-frame {
-      display: none !important;
-    }
+    /* 🚫 [핵심] 구글 번역 상단 띠(배너)만 완벽 박멸 */
+    .goog-te-banner-frame { display: none !important; }
+    .skiptranslate > iframe.goog-te-banner-frame { display: none !important; }
     
     /* 상단 배너가 사라진 자리를 메꾸고 화면 밀림 방지 */
-    body { 
-      top: 0px !important; 
-      margin-top: 0px !important; 
-      position: static !important;
-    }
+    body { top: 0px !important; position: static !important; }
 
-    /* 번역된 글자를 터치했을 때 뜨는 팝업과 노란색 하이라이트 제거 */
+    /* 🚫 번역된 글자를 터치했을 때 뜨는 팝업과 노란색 하이라이트 제거 */
     #goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
     .goog-text-highlight { background: none !important; box-shadow: none !important; }
 
+    /* UI 스타일 */
     .header {
       width: 100%; padding: 20px 0; display: none; 
       justify-content: space-around; background: white;
@@ -174,8 +146,10 @@
 </head>
 <body>
 
-  <!-- 🌐 구글 번역 드롭다운 -->
-  <div id="google_translate_element"></div>
+  <!-- 🛡️ 번역기를 담아두는 보호 상자 -->
+  <div id="translate-wrapper">
+    <div id="google_translate_element"></div>
+  </div>
 
   <div id="intro-screen">
     <div class="intro-title">Ready to Wash? 🫧</div>
@@ -211,7 +185,7 @@
     <button class="reset-btn" onclick="resetToHome()">Home 🏠</button>
   </div>
 
-  <!-- 🌐 구글 번역 스크립트 -->
+  <!-- 🌐 구글 번역 스크립트 (기획자님이 좋아하셨던 SIMPLE 레이아웃 유지!) -->
   <script type="text/javascript">
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({

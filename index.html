@@ -12,17 +12,26 @@
       height: 100vh; overflow: hidden; touch-action: manipulation; user-select: none;
     }
 
-    /* 🌐 구글 번역 위젯 위치 수정 (top을 15px -> 50px로 내려서 상단바 간섭 방지) */
+    /* 🌐 구글 번역 위젯 안정화 및 디자인 */
     #google_translate_element {
       position: absolute;
       top: 50px; 
-      right: 20px;
-      z-index: 200;
+      right: 15px;
+      z-index: 9999; /* 화면의 그 어떤 것보다 무조건 맨 위에 오도록 강력하게 설정 */
+      background: rgba(255, 255, 255, 0.9);
+      padding: 4px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
     }
 
-    /* 구글 번역 위젯의 불필요한 상단 띠 숨기기 */
-    .goog-te-banner-frame.skiptranslate { display: none !important; }
-    body { top: 0px !important; }
+    /* 위젯 내부 셀렉트 박스(드롭다운) 디자인 살짝 다듬기 */
+    .goog-te-combo {
+      padding: 5px;
+      border-radius: 5px;
+      border: 1px solid #bae6fd;
+      font-size: 14px;
+      outline: none;
+    }
 
     .header {
       width: 100%; padding: 20px 0; display: none; 
@@ -134,7 +143,7 @@
 </head>
 <body>
 
-  <!-- 🌐 구글 번역 드롭다운이 들어갈 자리 -->
+  <!-- 🌐 구글 번역 드롭다운 -->
   <div id="google_translate_element"></div>
 
   <div id="intro-screen">
@@ -171,13 +180,11 @@
     <button class="reset-btn" onclick="resetToHome()">Home 🏠</button>
   </div>
 
-  <!-- 🌐 구글 번역 스크립트 추가 -->
+  <!-- 🌐 구글 번역 스크립트 안정화 버전 (디자인 제약 해제) -->
   <script type="text/javascript">
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({
-        pageLanguage: 'en',
-        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-        autoDisplay: false
+        pageLanguage: 'en'
       }, 'google_translate_element');
     }
   </script>

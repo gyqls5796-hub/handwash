@@ -12,15 +12,17 @@
       height: 100vh; overflow: hidden; touch-action: manipulation; user-select: none;
     }
 
-    /* 💡 브라우저 번역기를 속이기 위한 투명 텍스트 박스 */
-    .translation-trigger {
+    /* 🌐 구글 번역 위젯을 예쁘게 우측 상단에 띄우기 위한 공간 */
+    #google_translate_element {
       position: absolute;
-      width: 1px; height: 1px;
-      margin: -1px; padding: 0;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      border: 0;
+      top: 15px;
+      right: 15px;
+      z-index: 200;
     }
+
+    /* 구글 번역 위젯의 불필요한 상단 띠 숨기기 */
+    .goog-te-banner-frame.skiptranslate { display: none !important; }
+    body { top: 0px !important; }
 
     .header {
       width: 100%; padding: 20px 0; display: none; 
@@ -132,13 +134,8 @@
 </head>
 <body>
 
-  <!-- 💡 브라우저가 영문 문서로 인식하도록 돕는 보이지 않는 설명문 (화면엔 안 보입니다) -->
-  <div class="translation-trigger">
-    Welcome to the Hand Washing Education Game. Proper hand washing is the most effective way to prevent infections and stay healthy. 
-    Please enter your name and age to start the game. In this game, you will find the hidden blind spots on your hands, 
-    such as your fingertips, under your nails, and between your fingers. Pop the soap foam bubbles to wash these areas perfectly. 
-    Good luck and try to achieve the highest score!
-  </div>
+  <!-- 🌐 구글 번역 드롭다운이 들어갈 자리 -->
+  <div id="google_translate_element"></div>
 
   <div id="intro-screen">
     <div class="intro-title">Ready to Wash? 🫧</div>
@@ -173,6 +170,18 @@
     <div class="feedback" id="feedback-msg">Awesome!</div>
     <button class="reset-btn" onclick="resetToHome()">Home 🏠</button>
   </div>
+
+  <!-- 🌐 구글 번역 스크립트 추가 -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'en', // 기본 언어는 영어
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+        autoDisplay: false
+      }, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
   <script>
     const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbwg6YI0G06IpcCW8HHWOdd-gH40BMdgiP8O48xRAVNE8uirN3vq6rn-ty9lm66uJH01/exec";

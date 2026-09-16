@@ -12,30 +12,51 @@
       height: 100vh; overflow: hidden; touch-action: manipulation; user-select: none;
     }
 
-    /* 🛡️ 구글 번역기 위치 고정 (우측 상단) */
-    #translate-wrapper {
+    /* 🌐 1. 번역기 위치 고정 */
+    #google_translate_element {
       position: fixed !important;
       top: 15px !important; 
       right: 15px !important;
       z-index: 99999 !important;
-      background: rgba(255, 255, 255, 0.95);
-      padding: 4px 8px;
-      border-radius: 8px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
     }
 
-    /* 🚫 [핵심] 구글 번역 상단 띠(배너)만 완벽 박멸 */
+    /* 🌐 2. "Powered by Google" 텍스트 투명하게 숨기기 */
+    .goog-te-gadget {
+      font-size: 0px !important;
+      color: transparent !important;
+    }
+
+    /* 🌐 3. [핵심 수정] 껍데기는 놔두고 '구글 로고 이미지'만 핀셋 제거! */
+    .goog-te-gadget .goog-logo-link,
+    .goog-te-gadget img {
+      display: none !important;
+    }
+
+    /* 🌐 4. 기획자님이 원하셨던 깔끔한 네이티브 드롭다운 디자인 */
+    .goog-te-combo {
+      font-family: 'Arial Rounded MT Bold', -apple-system, sans-serif !important;
+      font-size: 14px !important;
+      color: #0f172a !important;
+      padding: 8px 12px !important;
+      border-radius: 20px !important;
+      border: 2px solid #bae6fd !important;
+      background-color: white !important;
+      outline: none !important;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05) !important;
+      font-weight: bold !important;
+      cursor: pointer !important;
+      margin: 0 !important;
+    }
+
+    /* 🚫 5. 구글 번역 상단 띠(배너) 완벽 박멸 및 화면 밀림 방지 */
     .goog-te-banner-frame { display: none !important; }
-    .skiptranslate > iframe.goog-te-banner-frame { display: none !important; }
-    
-    /* 상단 배너가 사라진 자리를 메꾸고 화면 밀림 방지 */
     body { top: 0px !important; position: static !important; }
 
-    /* 🚫 번역된 글자를 터치했을 때 뜨는 팝업과 노란색 하이라이트 제거 */
+    /* 🚫 6. 번역된 글자 팝업 툴팁과 노란색 형광펜 효과 차단 */
     #goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
     .goog-text-highlight { background: none !important; box-shadow: none !important; }
 
-    /* UI 스타일 */
+    /* 게임 기본 UI 스타일 */
     .header {
       width: 100%; padding: 20px 0; display: none; 
       justify-content: space-around; background: white;
@@ -146,10 +167,8 @@
 </head>
 <body>
 
-  <!-- 🛡️ 번역기를 담아두는 보호 상자 -->
-  <div id="translate-wrapper">
-    <div id="google_translate_element"></div>
-  </div>
+  <!-- 🌐 구글 번역 드롭다운이 들어갈 자리 -->
+  <div id="google_translate_element"></div>
 
   <div id="intro-screen">
     <div class="intro-title">Ready to Wash? 🫧</div>
@@ -185,7 +204,7 @@
     <button class="reset-btn" onclick="resetToHome()">Home 🏠</button>
   </div>
 
-  <!-- 🌐 구글 번역 스크립트 (기획자님이 좋아하셨던 SIMPLE 레이아웃 유지!) -->
+  <!-- 🌐 구글 번역 스크립트 (SIMPLE 옵션 복구 완료) -->
   <script type="text/javascript">
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({

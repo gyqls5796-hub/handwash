@@ -30,7 +30,7 @@
     .goog-te-gadget span { display: none !important; }
     .goog-logo-link { display: none !important; }
 
-    /* 🌐 4. 우리가 원하는 깔끔한 드롭다운(Select) 박스 디자인만 살리기 */
+    /* 🌐 4. 우리가 원하는 깔끔한 드롭다운(Select) 박스 디자인 */
     .goog-te-combo {
       font-family: 'Arial Rounded MT Bold', -apple-system, sans-serif !important;
       font-size: 14px !important;
@@ -43,12 +43,26 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.05) !important;
       font-weight: bold !important;
       cursor: pointer !important;
-      appearance: none; /* 브라우저 기본 화살표 디자인 초기화 */
     }
 
-    /* 상단 밀림 방지 */
-    .goog-te-banner-frame.skiptranslate { display: none !important; }
-    body { top: 0px !important; }
+    /* 🚫 5. [핵심] 구글 번역 상단 띠(배너) 완벽 박멸 */
+    iframe.goog-te-banner-frame { 
+      display: none !important; 
+    }
+    .goog-te-banner-frame {
+      display: none !important;
+    }
+    
+    /* 상단 배너가 사라진 자리를 메꾸고 화면 밀림 방지 */
+    body { 
+      top: 0px !important; 
+      margin-top: 0px !important; 
+      position: static !important;
+    }
+
+    /* 번역된 글자를 터치했을 때 뜨는 팝업과 노란색 하이라이트 제거 */
+    #goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
+    .goog-text-highlight { background: none !important; box-shadow: none !important; }
 
     .header {
       width: 100%; padding: 20px 0; display: none; 
@@ -160,7 +174,7 @@
 </head>
 <body>
 
-  <!-- 🌐 구글 번역 드롭다운이 들어갈 자리 -->
+  <!-- 🌐 구글 번역 드롭다운 -->
   <div id="google_translate_element"></div>
 
   <div id="intro-screen">
@@ -197,11 +211,13 @@
     <button class="reset-btn" onclick="resetToHome()">Home 🏠</button>
   </div>
 
-  <!-- 🌐 구글 번역 스크립트 (모바일 네이티브 셀렉트박스를 위해 옵션 초기화) -->
+  <!-- 🌐 구글 번역 스크립트 -->
   <script type="text/javascript">
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({
-        pageLanguage: 'en'
+        pageLanguage: 'en',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+        autoDisplay: false
       }, 'google_translate_element');
     }
   </script>

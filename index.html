@@ -12,11 +12,11 @@
       height: 100vh; overflow: hidden; touch-action: manipulation; user-select: none;
     }
 
-    /* 🌐 구글 번역 위젯을 예쁘게 우측 상단에 띄우기 위한 공간 */
+    /* 🌐 구글 번역 위젯 위치 수정 (top을 15px -> 50px로 내려서 상단바 간섭 방지) */
     #google_translate_element {
       position: absolute;
-      top: 15px;
-      right: 15px;
+      top: 50px; 
+      right: 20px;
       z-index: 200;
     }
 
@@ -175,7 +175,7 @@
   <script type="text/javascript">
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({
-        pageLanguage: 'en', // 기본 언어는 영어
+        pageLanguage: 'en',
         layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
         autoDisplay: false
       }, 'google_translate_element');

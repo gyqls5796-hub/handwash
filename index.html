@@ -12,24 +12,27 @@
       height: 100vh; overflow: hidden; touch-action: manipulation; user-select: none;
     }
 
-    /* 🛡️ 1. 구글 번역기를 담는 튼튼한 보호 상자 (이 녀석이 위치를 잡습니다) */
+    /* 🛡️ 무적의 번역기 보호 상자 */
     #translate-wrapper {
-      position: absolute;
-      top: 20px; 
-      right: 20px;
-      z-index: 9999; /* 무조건 맨 위 */
+      position: fixed !important; /* 스크롤이나 화면 변화에 절대 밀리지 않음 */
+      top: 15px !important; 
+      right: 15px !important;
+      z-index: 99999 !important; /* 무조건 맨 앞 */
+      display: block !important; /* 구글이 숨기려고 해도 강제로 보여줌 */
+      visibility: visible !important;
       background: rgba(255, 255, 255, 0.95);
       padding: 4px 8px;
       border-radius: 8px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.15);
     }
 
-    /* 🛡️ 2. 보호 상자 안의 구글 번역기 설정 */
+    /* 구글 번역기 자체도 강제 표시 */
     #google_translate_element {
-      /* 여기엔 절대 position 설정을 넣지 않습니다! */
+      display: block !important;
+      visibility: visible !important;
     }
 
-    /* 구글 번역 위젯의 불필요한 상단 띠 숨기기 (화면 밀림 방지) */
+    /* 상단 밀림 방지 */
     .goog-te-banner-frame.skiptranslate { display: none !important; }
     body { top: 0px !important; }
 
@@ -143,7 +146,7 @@
 </head>
 <body>
 
-  <!-- 🛡️ 번역기를 담아두는 보호 상자 (Wrapper) -->
+  <!-- 🛡️ 사라짐 방지 장치가 걸린 보호 상자 -->
   <div id="translate-wrapper">
     <div id="google_translate_element"></div>
   </div>
@@ -182,13 +185,11 @@
     <button class="reset-btn" onclick="resetToHome()">Home 🏠</button>
   </div>
 
-  <!-- 🌐 구글 번역 스크립트 -->
+  <!-- 🌐 구글 번역 스크립트 (충돌 방지를 위해 심플 설정만 남김) -->
   <script type="text/javascript">
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({
-        pageLanguage: 'en',
-        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-        autoDisplay: false
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
       }, 'google_translate_element');
     }
   </script>
